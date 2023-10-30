@@ -1,0 +1,48 @@
+Geography	Region Name	Physical Location	Availability Zone 	Paired Region	Restriction Status	Long	Lat
+Africa	South Africa North	Johannesburg	3	South Africa West	Enabled by default	28.049722	-26.205
+Africa	South Africa West	Cape Town	Not supported	South Africa North	Access Restricted	18.417396	-33.928992
+Asia Pacific	Australia Central	Canberra	Not supported	Australia Central 2	Enabled by default	149.1012676	-35.2975906
+Asia Pacific	Australia Central 2	Canberra	Not supported	Australia Central	Access Restricted	149.1012676	-35.2975906
+Asia Pacific	Australia East	New South Wales	3	Australia Southeast	Enabled by default	151.2291515	-33.9175545
+Asia Pacific	Australia Southeast	Victoria	Not supported	Australia East	Enabled by default	148.9741517	-21.2309116
+Asia Pacific	Central India	Pune	3	South India	Enabled by default	73.8544541	18.521428
+Asia Pacific	East Asia	Hong Kong	3	Southeast Asia	Enabled by default	114.1628131	22.2793278
+Asia Pacific	Japan East	Tokyo, Saitama	3	Japan West	Enabled by default	139.7594549	35.6828387
+Asia Pacific	Japan West	Osaka	Not supported	Japan East	Enabled by default	135.5014539	34.6937569
+Asia Pacific	Korea Central	Seoul	3	Korea South	Enabled by default	126.9782914	37.5666791
+Asia Pacific	Korea South	Busan	Not supported	Korea Central	Enabled by default	129.0752365	35.1799528
+Asia Pacific	Southeast Asia	Singapore	3	East Asia	Enabled by default	103.8519072	1.289975
+Asia Pacific	South India	Chennai	Not supported	Central India	Enabled by default	80.270186	13.0836939
+Asia Pacific	West India	Mumbai	Not supported	South India	Enabled by default	72.878176	19.0785451
+Canada	Canada Central	Toronto	3	Canada East	Enabled by default	-79.3839347	43.6534817
+Canada	Canada East	Quebec	Not supported	Canada Central	Enabled by default	-71.2084061	46.8137431
+Europe	France Central	Paris	3	France South	Enabled by default	2.2300410217200766	48.8588897
+Europe	France South	Marseille	Not supported	France Central	Access Restricted	5.3699525	43.2961743
+Europe	Germany North	Berlin	Not supported	Germany West Central	Access Restricted	13.3888599	52.5170365
+Europe	Germany West Central	Frankfurt	3	Germany North	Enabled by default	8.6820917	50.1106444
+#Europe	Italy North	Milan	3		Enabled by default	9.1896346	45.4641943
+Europe	North Europe	Clondalkin, Ireland	3	West Europe	Enabled by default	-6.3942689	53.3219624
+Europe	Norway East	Oslo	3	Norway West	Enabled by default	10.7389701	59.9133301
+Europe	Norway West	Stavanger	Not supported	Norway East	Access Restricted	5.7318061	58.9699509
+#Europe	Poland Central	Warsaw	3		Enabled by default	21.0067249	52.2319581
+Europe	Sweden Central	Gävle	3		Enabled by default	17.1467019	60.6750132
+Europe	Switzerland North	Zurich	3	Switzerland West	Enabled by default	8.5410422	47.3744489
+Europe	Switzerland West	Geneva	Not supported	Switzerland North	Access Restricted	6.1466014	46.2017559
+Europe	UK South	London	3	UK West	Enabled by default	-0.1276474	51.5073219
+Europe	UK West	Cardiff	Not supported	UK South	Enabled by default	-3.1791934	51.4816546
+Europe	West Europe	Middenmeer, Netherlands	3	North Europe	Enabled by default	4.9948462	52.8111468
+Middle East	Israel Central	Modiin, Israel	3		Enabled by default	35.0069297	31.9085744
+Middle East	Qatar Central	Doha	3		Enabled by default	51.5264162	25.2856329
+Middle East	UAE Central	Abu Dhabi	Not supported	UAE North	Access Restricted	54.3774014	24.4538352
+Middle East	UAE North	Dubai	3	UAE Central	Enabled by default	55.2924914	25.2653471
+South America	Brazil South	Sao Paulo State	3	South Central US	Enabled by default	-46.6333824	-23.5506507
+South America	Brazil Southeast	Rio	Not supported	Brazil South	Access Restricted	-43.2093727	-22.9110137
+US	Central US	West Des Moines, Iowa	3	East US 2	Enabled by default	-93.7594059	41.5644476
+US	East US	Boydton, Virginia	3	West US	Enabled by default	-78.3882002	36.6673066
+US	East US 2	Fairfax, Virginia	3	Central US	Enabled by default	-77.3063733	38.8462236
+US	North Central US	Elk grove, chicago, Illinois	Not supported	South Central US	Enabled by default	-87.6244212	41.8755616
+US	South Central US	San Antonio, Texas	3	North Central US	Enabled by default	-98.4951405	29.4246002
+US	West Central US	Cheyenne, Wyoming	Not supported	West US 2	Enabled by default	-104.820246	41.139981
+US	West US	San Jose, California	Not supported	East US	Enabled by default	-121.890591	37.3361663
+US	West US 2	Quincy, Washington	3	West Central US	Enabled by default	-119.8535054	47.2343673
+US	West US 3	El mirage, Arizona	3	East US	Enabled by default	-112.3244866	33.6130338

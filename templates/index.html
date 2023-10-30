@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <script src="//unpkg.com/globe.gl"></script>
+    </head>
+    <body>
+        <div id="globeViz"></div>
+        Tests
+    </body>
+    <script>
+        const getLatency = async () => {
+            const rq = new Request("http://127.0.0.1:5000/latency");
+            const response = await fetch(rq);
+            console.log(response);
+            result = await response.json();
+            return result;
+        }
+        const getLocations = async () => {
+            const rq = new Request("http://127.0.0.1:5000/locations");
+            const response = await fetch(rq);
+            result = await response.json();
+            return result;
+        };
+        const formatLocationData = async (input) => {
+            const gData = Object.keys(input).map((v,i,a) => {
+                console.log(v);
+                console.log(input[v]);
+                console.log(input[v].Lat)
+                return {
+                    name: v,
+                    lat: input[v].Lat,
+                    lng: input[v].Long,
+                    size: 0,
+                    color: "white"
+                }
+            });
+            return gData;
+        }
+
+        const generateArcsData = async (latency, locations, filteredLocation = null) => {
+            return Object.keys(latency).map((latency_key) => {
+                return Object.keys(locations).map((location_key) => {
+                    return {
+                        startLat: locations[location_key].Lat,
+                        startLng: locations[location_key].Long,
+                        endLat: locations[latency_key].Lat,
+                        endLng: locations[latency_key].Long,
+                        color:"white",
+                        name: latency_key + ": " + latency[latency_key][location_key] + "ms"
+                    }
+                })
+            }).flat();
+            
+            const N = 20;
+            const arcsData = [...Array(N).keys()].map(() => ({
+            startLat: (Math.random() - 0.5) * 180,
+            startLng: (Math.random() - 0.5) * 360,
+            endLat: (Math.random() - 0.5) * 180,
+            endLng: (Math.random() - 0.5) * 360,
+            color: [['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)], ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]]
+            }));
+            return arcsData;
+        }
+
+        function calc_distance(la,lb){
+            const R = 6371e3; //meters
+            const l1 = la.lat * Math.PI / 180;
+            const l2 = lb.lat * Math.PI / 180;
+
+            const delta = (lb.lat - la.lat) * Math.PI / 180;
+            const lambda = (lb.lng - la.lng) * Math.PI / 180;
+
+            const a = Math.sin(delta/2) * Math.sin(delta/2) +
+                      Math.cos(l1) * Math.cos(l2) *
+                      Math.sin(lambda/2) * Math.sin(lambda/2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const d = R * c;
+            console.log(d);
+            return d;
+            //return Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
+
+        }
+
+        function getClosestLocation(l, locations){
+            console.log(locations)
+            const closest = Object.keys(locations).sort((a,b) => {
+                //console.log(a);
+                const la = locations[a];
+                const lb = locations[b];
+                const a_distance = calc_distance(l,la);
+                const b_distance = calc_distance(l,lb);
+                return a_distance - b_distance;
+                const la_diff = Math.sqrt(Math.pow(la.lat-l.lat,2)+Math.pow(la.lng-l.lng,2));
+                const lb_diff = Math.sqrt(Math.pow(lb.lat-l.lat,2)+Math.pow(lb.lng-l.lng,2));
+                return la_diff-lb_diff;
+                //return 1;
+            })
+
+            return closest[0];
+        }
+
+        const render_globe = async () => {
+            const latency = await getLatency();
+            console.log(latency)
+            const ll = await getLocations();
+            
+            const gData = await formatLocationData(ll);
+            const gArcs = await generateArcsData(latency,ll);
+
+            console.log(gArcs);
+
+            const globe = Globe()
+                .globeImageUrl('//unpkg.com/three-globe/example/img/earth-day.jpg')
+                .pointsData(gData)
+                .onGlobeClick(clearLocation)
+                .onPointClick(chooseLocation)
+                .pointAltitude('size')
+                .pointColor('color')
+            (document.getElementById('globeViz'))
+            var selectedLocation = "";
+            function chooseLocation({lat: endLat, lng: endLng}){
+                console.log({lat: endLat, lng: endLng});
+                const closest = getClosestLocation({lat: endLat, lng: endLng}, gData)
+                console.log(closest);
+                const c = gData[closest];
+                console.log(c);
+                console.log(selectedLocation);
+                const a = gArcs.filter((a) => {return a.startLat == gData[closest].lat});
+                console.log(a);
+                globe.arcsData(a)
+            };
+            function clearLocation({lat: endLat, lng: endLng}){
+                const d1=getClosestLocation({lat:endLat, lng:endLng},gData);
+                const data_center = gData[d1];
+                const filtered = gData.filter(d => d.lng!= data_center.lng);
+                const d2 = getClosestLocation(data_center, filtered);
+                const data_center2 = filtered[d2];
+                console.log(endLat);
+                const arc = {
+                        startLat: data_center.lat,
+                        startLng: data_center.lng,
+                        endLat: data_center2.lat,
+                        endLng: data_center2.lng,
+                        color:"white",
+                        //name: latency_key + ": " + latency[latency_key][location_key] + "ms"
+                    };
+                    console.log(arc);
+                globe.arcsData([arc])
+            }
+
+        }
+        
+        render_globe();
+  
+    </script>
+</html>
