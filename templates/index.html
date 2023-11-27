@@ -15,7 +15,7 @@
             return result;
         }
         const getLocations = async () => {
-            const rq = new Request("locations.json");
+            const rq = new Request("location.json");
             const response = await fetch(rq);
             result = await response.json();
             return result;
