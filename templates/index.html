@@ -1,10 +1,19 @@
 <html>
     <head>
         <script src="//unpkg.com/globe.gl"></script>
+        <style>
+            body {
+                margin: 0;
+            }
+        </style>
     </head>
     <body>
         <div id="globeViz"></div>
-        Tests
+        <div id="factbox" style="color: white; font-family:'Courier New', Courier, monospace; position:absolute; top: 200px; left: 30px;">
+            <div id="location"></div>
+            <div id="datacenter"></div>
+            <div id="latency"></div>
+        </div>
     </body>
     <script>
         const getLatency = async () => {
@@ -182,13 +191,15 @@
                         //name: get_latency({lat:lat, lng:lng})
                         //name: latency_key + ": " + latency[latency_key][location_key] + "ms"
                     };*/
+
+                const latency_text = (value*fraction).toFixed(1) + "ms";
                 const arc2 = {
                     startLat:endLat,
                     startLng:endLng,
                     endLat: data_center.lat,
                     endLng: data_center.lng,
                     color:"black",
-                    name: (value*fraction).toFixed(1) + "ms"
+                    name: latency_text
                     //name: str(getLatency({lat:endLat, lng: endLng}))
                 }
                 globe.arcsData([/*arc1,*/ arc2])
@@ -196,29 +207,13 @@
                 const newArray = [...gData, point];
                 //console.log(newArray);
                 globe.pointsData(newArray);
+                document.getElementById("datacenter").innerHTML="Closest Datacenter: " + data_center.name;
+                document.getElementById("location").innerHTML= "Longitude:" + endLng + "<br/> Latitude: " + endLat;
+                document.getElementById("latency").innerHTML = "Estimated latency: " + latency_text;
                 /*setTimeout(() => {
                     globe.pointsData(globe.pointsData().filter((p) => p != point));
                 }, 2000);*/
             }
-/*
-            function generateHeatMap(cutoff){
-                const X = 100;
-                const Y = 100;
-                //const N = 360*180;
-                const data = [...Array(X*Y).keys()].map((i) => {
-                    lng = (360*(i%X)/Y)-180; // from -180 to 180
-                    lat = (160*Math.floor(i/X)/X)-80; // from -90 to 90
-                    return ({
-                        lat: lat,
-                        lng: lng,
-                        weight: Math.max(0,cutoff - get_latency({lat:lat, lng:lng}))
-                    });
-                });
-                //console.log(data);
-                return data;
-            }
-            //globe.heatmapsData([generateHeatMap(300)]);*/
-
 
         }
         render_globe();
