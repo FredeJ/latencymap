@@ -29,7 +29,6 @@ def join_datasets(datasets):
 def read_locations():
     d = pd.read_table("locations", sep="\t", comment='#') \
         .set_index("Region Name")[["Long", "Lat"]]
-    #print(d)
     return d
 
 def main():
@@ -54,7 +53,6 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 @app.route("/latency")
 def latency():
     return send_file(data_filename)
-    return data_dict
 
 locs = read_locations()
 location_dict = locs.to_dict("index")
@@ -65,7 +63,6 @@ with open(location_filename,"w") as f:
 @app.route("/locations")
 def locations():
     return send_file(location_filename)
-    return location_dict
 
 @app.route("/")
 def index():
