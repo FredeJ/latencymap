@@ -8,14 +8,14 @@
     </body>
     <script>
         const getLatency = async () => {
-            const rq = new Request("http://127.0.0.1:5000/latency");
+            const rq = new Request("data.json");
             const response = await fetch(rq);
             console.log(response);
             result = await response.json();
             return result;
         }
         const getLocations = async () => {
-            const rq = new Request("http://127.0.0.1:5000/locations");
+            const rq = new Request("locations.json");
             const response = await fetch(rq);
             result = await response.json();
             return result;
