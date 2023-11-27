@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 from flask_cors import CORS
 import pandas as pd
 import os
+import json
 
 tables_dir = "tables"
 
@@ -41,6 +42,9 @@ def main():
 ds = read_datasets()
 data = join_datasets(ds)
 data_dict = data.fillna("NaN").to_dict()
+data_filename = "data.json"
+with open(data_filename,"w") as f:
+    json.dump(data_dict, f)
 
 app = Flask(__name__)
 CORS(app)
@@ -49,13 +53,18 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 @app.route("/latency")
 def latency():
+    return send_file(data_filename)
     return data_dict
 
 locs = read_locations()
 location_dict = locs.to_dict("index")
+location_filename = "location.json"
+with open(location_filename,"w") as f:
+    json.dump(location_dict, f)
 
 @app.route("/locations")
 def locations():
+    return send_file(location_filename)
     return location_dict
 
 @app.route("/")

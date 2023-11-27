@@ -31,12 +31,12 @@ Europe	Switzerland West	Geneva	Not supported	Switzerland North	Access Restricted
 Europe	UK South	London	3	UK West	Enabled by default	-0.1276474	51.5073219
 Europe	UK West	Cardiff	Not supported	UK South	Enabled by default	-3.1791934	51.4816546
 Europe	West Europe	Middenmeer, Netherlands	3	North Europe	Enabled by default	4.9948462	52.8111468
-Middle East	Israel Central	Modiin, Israel	3		Enabled by default	35.0069297	31.9085744
+#Middle East	Israel Central	Modiin, Israel	3		Enabled by default	35.0069297	31.9085744
 Middle East	Qatar Central	Doha	3		Enabled by default	51.5264162	25.2856329
 Middle East	UAE Central	Abu Dhabi	Not supported	UAE North	Access Restricted	54.3774014	24.4538352
 Middle East	UAE North	Dubai	3	UAE Central	Enabled by default	55.2924914	25.2653471
 South America	Brazil South	Sao Paulo State	3	South Central US	Enabled by default	-46.6333824	-23.5506507
-South America	Brazil Southeast	Rio	Not supported	Brazil South	Access Restricted	-43.2093727	-22.9110137
+#South America	Brazil Southeast	Rio	Not supported	Brazil South	Access Restricted	-43.2093727	-22.9110137
 US	Central US	West Des Moines, Iowa	3	East US 2	Enabled by default	-93.7594059	41.5644476
 US	East US	Boydton, Virginia	3	West US	Enabled by default	-78.3882002	36.6673066
 US	East US 2	Fairfax, Virginia	3	Central US	Enabled by default	-77.3063733	38.8462236

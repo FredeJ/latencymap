@@ -75,18 +75,16 @@
 
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             const d = R * c;
-            console.log(d);
             return d;
             //return Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
 
         }
 
-        function getClosestLocation(l, locations){
-            console.log(locations)
-            const closest = Object.keys(locations).sort((a,b) => {
+        function sort_by_closest(l, locations){
+            return Object.values(locations).sort((a,b) => {
                 //console.log(a);
-                const la = locations[a];
-                const lb = locations[b];
+                const la = a;//locations[a];
+                const lb = b;//locations[b];
                 const a_distance = calc_distance(l,la);
                 const b_distance = calc_distance(l,lb);
                 return a_distance - b_distance;
@@ -94,9 +92,11 @@
                 const lb_diff = Math.sqrt(Math.pow(lb.lat-l.lat,2)+Math.pow(lb.lng-l.lng,2));
                 return la_diff-lb_diff;
                 //return 1;
-            })
+            });
+        }
 
-            return closest[0];
+        function getClosestLocation(l, locations){
+            return sort_by_closest(l,locations)[0];
         }
 
         const render_globe = async () => {
@@ -109,6 +109,11 @@
 
             console.log(gArcs);
 
+            
+            navigator.geolocation.getCurrentPosition((pos) => {
+                clearLocation({lat:pos.coords.latitude, lng: pos.coords.longitude});
+            })
+
             const globe = Globe()
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-day.jpg')
                 .pointsData(gData)
@@ -116,6 +121,11 @@
                 .onPointClick(chooseLocation)
                 .pointAltitude('size')
                 .pointColor('color')
+                .heatmapPointLat('lat')
+                .heatmapPointLng('lng')
+                .heatmapPointWeight('weight')
+                .heatmapTopAltitude(0.0)
+                .heatmapBandwidth(3)
             (document.getElementById('globeViz'))
             var selectedLocation = "";
             function chooseLocation({lat: endLat, lng: endLng}){
@@ -129,27 +139,88 @@
                 console.log(a);
                 globe.arcsData(a)
             };
-            function clearLocation({lat: endLat, lng: endLng}){
-                const d1=getClosestLocation({lat:endLat, lng:endLng},gData);
-                const data_center = gData[d1];
-                const filtered = gData.filter(d => d.lng!= data_center.lng);
-                const d2 = getClosestLocation(data_center, filtered);
-                const data_center2 = filtered[d2];
-                console.log(endLat);
-                const arc = {
-                        startLat: data_center.lat,
-                        startLng: data_center.lng,
-                        endLat: data_center2.lat,
-                        endLng: data_center2.lng,
-                        color:"white",
-                        //name: latency_key + ": " + latency[latency_key][location_key] + "ms"
-                    };
-                    console.log(arc);
-                globe.arcsData([arc])
+
+            function get_latency(point){
+                const locations = sort_by_closest(point, gData);
+                const chosen_datacenter = locations[0];
+                const distance = calc_distance(point,chosen_datacenter);
+                const reference_datacenter = locations.filter((l) => distance < calc_distance(l,chosen_datacenter))[0];
+                const reference_distance = calc_distance(chosen_datacenter, reference_datacenter);
+                const fraction = distance/reference_distance;
+                //console.log(reference_datacenter)
+                const value = latency[reference_datacenter.name][chosen_datacenter.name];            
+                //console.log(value);
+                return value*fraction;
             }
 
+            function clearLocation({lat: endLat, lng: endLng}){
+                const point = {lat:endLat, lng: endLng, color:'red',size:0};
+                const locations = sort_by_closest(point, gData);
+                //console.log(locations);
+                const data_center = locations[0];
+                //console.log(data_center);
+                const data_center_distance = calc_distance(point,data_center);
+                const less_than = locations.filter((l) => data_center_distance < calc_distance(l,data_center));
+                //console.log(less_than);
+                const reference_datacenter = less_than[0];
+                //console.log(reference_datacenter);
+                const reference_distance = calc_distance(data_center,reference_datacenter);
+                //console.log(data_center_distance);
+                //console.log(reference_distance);
+                const fraction = data_center_distance/reference_distance;
+                const value = latency[reference_datacenter.name][data_center.name];
+                //console.log(value);
+                //console.log(value*fraction);
+                
+                //const d1=getClosestLocation({lat:endLat, lng:endLng},gData);
+                /*const arc1 = {
+                        startLat: data_center.lat,
+                        startLng: data_center.lng,
+                        endLat: reference_datacenter.lat,
+                        endLng: reference_datacenter.lng,
+                        color:"white",
+                        //name: get_latency({lat:lat, lng:lng})
+                        //name: latency_key + ": " + latency[latency_key][location_key] + "ms"
+                    };*/
+                const arc2 = {
+                    startLat:endLat,
+                    startLng:endLng,
+                    endLat: data_center.lat,
+                    endLng: data_center.lng,
+                    color:"black",
+                    name: (value*fraction).toFixed(1) + "ms"
+                    //name: str(getLatency({lat:endLat, lng: endLng}))
+                }
+                globe.arcsData([/*arc1,*/ arc2])
+                //const newArray = [...globe.pointsData(), point];
+                const newArray = [...gData, point];
+                //console.log(newArray);
+                globe.pointsData(newArray);
+                /*setTimeout(() => {
+                    globe.pointsData(globe.pointsData().filter((p) => p != point));
+                }, 2000);*/
+            }
+/*
+            function generateHeatMap(cutoff){
+                const X = 100;
+                const Y = 100;
+                //const N = 360*180;
+                const data = [...Array(X*Y).keys()].map((i) => {
+                    lng = (360*(i%X)/Y)-180; // from -180 to 180
+                    lat = (160*Math.floor(i/X)/X)-80; // from -90 to 90
+                    return ({
+                        lat: lat,
+                        lng: lng,
+                        weight: Math.max(0,cutoff - get_latency({lat:lat, lng:lng}))
+                    });
+                });
+                //console.log(data);
+                return data;
+            }
+            //globe.heatmapsData([generateHeatMap(300)]);*/
+
+
         }
-        
         render_globe();
   
     </script>
